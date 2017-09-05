@@ -1,4 +1,4 @@
-class ChangeUrlFieldToTextOnShortenedUrl < ActiveRecord::Migration
+class ChangeUrlFieldToTextOnShortenedUrl < ActiveRecord::Migration[5.0]
   # def up
   #   change_column :shortened_urls, :url, :text
   # end

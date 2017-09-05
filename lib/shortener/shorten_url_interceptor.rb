@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 module Shortener
 =begin
-The Shorten URL Interceptor is a mail interceptor which shortens any URLs
-in generated emails.
+The Shorten URL Interceptor is a mail interceptor which shortens any URLs in generated emails.
 
 Usage:
 

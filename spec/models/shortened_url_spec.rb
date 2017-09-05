@@ -11,6 +11,7 @@ describe Shortener::ShortenedUrl, type: :model do
       let(:expected_url) { Faker::Internet.url }
 
       shared_examples_for "shortened url" do
+
         let(:short_url) { Shortener::ShortenedUrl.generate!(long_url, owner: owner) }
         it 'creates a shortened url record for the url' do
           expect{short_url}.to change{Shortener::ShortenedUrl.count}.by(1)
@@ -121,18 +122,6 @@ describe Shortener::ShortenedUrl, type: :model do
         end
       end
 
-      context "duplicate unique key" do
-        before do
-          expect_any_instance_of(Shortener::ShortenedUrl).to receive(:generate_unique_key).
-            and_return(existing_shortened_url.unique_key, 'ABCDEF')
-          Shortener::ShortenedUrl.where(unique_key: 'ABCDEF').delete_all
-        end
-        it 'should try until it finds a non-dup key' do
-          short_url = Shortener::ShortenedUrl.generate!(Faker::Internet.url)
-          expect(short_url).not_to be_nil
-          expect(short_url.unique_key).to eq "ABCDEF"
-        end
-      end
     end
 
     context "existing shortened URL with relative path" do

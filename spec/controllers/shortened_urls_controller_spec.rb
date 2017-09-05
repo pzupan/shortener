@@ -6,9 +6,10 @@ describe Shortener::ShortenedUrlsController, type: :controller do
   let(:short_url)   { Shortener::ShortenedUrl.generate(destination) }
 
   describe '#show' do
-    let(:params) { {} }
+    let(:other_params) { {} }
     before do
-      get :show, { id: key }.merge(params)
+      params = {id: key}.merge(other_params)
+      get :show, params: params
     end
 
     context 'valid keys' do
@@ -21,20 +22,20 @@ describe Shortener::ShortenedUrlsController, type: :controller do
 
         context "when request is not from an human" do
           before do
-            allow_any_instance_of(Rack::Request).to receive(:human?).and_return(false)
+            allow(VoightKampff).to receive(:human?).and_return(false)
           end
           context 'Shortener.ignore_robots == true' do
             it "calls fetch with token with track argument as false" do
               Shortener.ignore_robots = true
               expect(Shortener::ShortenedUrl).to receive(:fetch_with_token).with(hash_including(track: false)).and_call_original
-              get :show, { id: key }
+              get :show, params: {id: key}
             end
           end
           context 'Shortener.ignore_robots == false (default)' do
             it "calls fetch with token with track argument as true" do
               Shortener.ignore_robots = false
               expect(Shortener::ShortenedUrl).to receive(:fetch_with_token).with(hash_including(track: true)).and_call_original
-              get :show, { id: key }
+              get :show, params: { id: key }
             end
           end
         end
@@ -49,7 +50,7 @@ describe Shortener::ShortenedUrlsController, type: :controller do
       end
 
       context 'parameters on short url' do
-        let(:params) { { foo: 34, bar: 49 } }
+        let(:other_params) { { foo: 34, bar: 49 } }
         let(:key) { short_url.unique_key }
 
         context 'no parameters on long url' do
@@ -97,7 +98,7 @@ describe Shortener::ShortenedUrlsController, type: :controller do
         before do
           Shortener.default_redirect = 'http://www.default_redirect.com'
           # call again for the get is done with the setting
-          get :show, id: key
+          get :show, params: {id: key}
         end
 
         context 'non existant key' do
